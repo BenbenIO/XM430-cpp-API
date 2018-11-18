@@ -2,7 +2,7 @@
 A simple c++ API for controlling dynamixel XM430-* servomotor.
 The API was made in order to control a robotic arm, and consist of an unique class. The programme ran on a Raspberry PI 3B+, with the Dynamixel XM430 motors connected with [U2D2](http://www.robotis.us/u2d2/) (Serial-RS485).
 The datasheet references can be found [HERE](http://support.robotis.com/en/product/actuator/dynamixel_x/xm_series/xm430-w350.htm#bookmark5). 
-<br /> **Do not hesitate if you have any Issue or Resquest (Any function you want to add)**
+<br /> **Do not hesitate if you have any Issue or Request (Any function you want to add)**
 
 # Install && Dependencies
 The programme depend on the dynamixel_sdk library. Installation information can be found on their [github](https://github.com/ROBOTIS-GIT/DynamixelSDK). 
@@ -79,14 +79,14 @@ Output of the program:
 
 * __void SetPID(uint16_t P_gain, uint16_t I_gain, uint16_t D_gain);__
 <br />SetPID: set the different parameters of the internal motor's PID controler.
-<br />Input the P / I / D value between 0-16383 uint16_t
+<br />Input: the P / I / D value between 0-16383 uint16_t
 
 * __void PrintPID();__
 <br />PrintPID: printf the gain value of the motor's PID in the consol. Used for debugging.
 
 * __void SetFFGain(uint16_t FF1Gain, uint16_t FF2Gain);__
 <br />SetFFGain: set the different parameters of the internal motor's FeedForward controler.
-<br />Input the FF1 FF2 value between 0-16383 uint16_t
+<br />Input: the FF1 FF2 value between 0-16383 uint16_t
 
 * __void PrintFFGain();__
 <br />PrintFFGain: printf the gain value of the motor's FeedForward control in the consol. Used for debugging.
@@ -100,7 +100,7 @@ Output of the program:
 
 * __void SetCurrentLimit();__
 <br />SetCurrentLimit: set the maximun current (torque) output of the motor. Used for current-based position control (gripper)
-<br />Input is set in the define section CURRENT_LIMIT 1193
+<br />Input: is set in the define section CURRENT_LIMIT 1193
 
 * __void PrintCurrentLimit();__
 <br />PrintCurrentLimit: printf the value of the current limit (mA) in the console. Used for debugging.
