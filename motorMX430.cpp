@@ -9,11 +9,11 @@ uint16_t MotorXM430::GetModelNumber()
 	if(dxl_comm_result != COMM_SUCCESS)
 	{
 		printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
+		usleep(1000000);
 		printf("\n\n#######\nNot able to communicate with the motors\n" );
 		printf("Likely cause: no power / motor failure\n#######\n ");
 		usleep(1000000);
 		printf("Program exit()...\n");
-		usleep(1000000);
 		exit (EXIT_FAILURE);
 	}
 	return(modelNumber);
@@ -55,18 +55,10 @@ void MotorXM430::MovingStatus()
 int16_t MotorXM430::ReadCurrent()
 {
 	uint16_t current = 0;
-	int16_t currentSigned = 0;
 	dxl_comm_result = packetHandler->read2ByteTxRx(portHandler, m_ID, ADDR_PRO_PRESENT_CURRENT, &current);
-	if(current > CURRENT_COMP)
-	{
-		currentSigned = current -CURRENT_OFFSET;
-	}
-	else
-	{
-		currentSigned = current;
-	}
-	printf("Motor %d: Current Signe = %d\n",m_ID, currentSigned);
-	return(current);
+	int16_t currentS = current;
+	//printf("Implicit conversion: %d\n",currentS);
+	return(currentS);
 }
 		
 float MotorXM430::MAP(uint32_t angle, long in_min, long in_max, long out_min, long out_max)

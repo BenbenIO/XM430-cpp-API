@@ -56,8 +56,6 @@
 #define CURRENT_LIMIT							 1193				//mA
 #define MIN_MOTOR_ANGLE						 0					//Use for mapping				
 #define MAX_MOTOR_ANGLE						 4095				//Use for mapping
-#define CURRENT_COMP							32767				// Arbitrary value from Rasheed to convert unsigned to signed
-#define CURRENT_OFFSET						65536				//
 
 class MotorXM430
 {
@@ -92,7 +90,7 @@ public:
 	uint8_t IsMoving();
 	//MovingStatus: printf the moving status of the motors. Used for debugging.
 	void MovingStatus();
-	//ReadCurrent(): return the signed current of the motor in mA. 
+	//ReadCurrent(): return the signed current of the motor in motorUnit. 
 	int16_t ReadCurrent();
 	
 	//MAP: return the mapped angle value into the other unit. Used for converting angle degree to angle motors.]
