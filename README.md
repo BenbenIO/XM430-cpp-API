@@ -2,13 +2,16 @@
 A simple c++ API for controlling dynamixel XM430-* servomotor.
 The API was made in order to control a robotic arm, and consist of an unique class. The programme ran on a Raspberry PI 3B+, with the Dynamixel XM430 motors connected with [U2D2](http://www.robotis.us/u2d2/) (Serial-RS485).
 The datasheet references can be found [HERE](http://support.robotis.com/en/product/actuator/dynamixel_x/xm_series/xm430-w350.htm#bookmark5). 
-<br /> **Do not hesitate if you have any Issue or Request (Any function you want to add)**
+## Do not hesitate if you have any Issue or Request (Any function you want to add)
+Latest update: changed the way to read the current motor.
 
 # Install && Dependencies
 The programme depend on the dynamixel_sdk library. Installation information can be found on their [github](https://github.com/ROBOTIS-GIT/DynamixelSDK). 
 <br />If you want to use a raspberry Pi please build and intall the SingleBoard Computer version (linux_sbc). 
 Once the install is done download this repository and make the MakeFile in the make_run directory, an run the code ./exampleServo
 <br />You can add your own code to the project by adding: __SOURCES += yourcode.cpp__ in the MakeFile
+
+<br/>If you encounter any problem with the installation let me know. If when running the code a **Hardware Error** type pop ups, it maybe cause by a power supply to important (12V are recommended). 
 
 # Example Program
 The API is illustrated in the exampleServo.cpp file.
