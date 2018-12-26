@@ -8,7 +8,7 @@ Latest update: Add information for installing this library on Ubuntu.
 # Install && Dependencies
 The programme depend on the dynamixel_sdk library. Installation information can be found on their [github](https://github.com/ROBOTIS-GIT/DynamixelSDK). 
 * For raspberry Pi please build and intall the SingleBoard Computer version (linux_sbc).
-* For Ubuntu, please use the linux build, ```sudo chmod a+rw /dev/ttyUSB0 ```, the change the format in the make file ``` **$(INCLUDES) $(FORMAT) -g``` with ```FORMAT = -m64``` and add the x64 library ``` -ldxl_x64_cpp ```
+* For Ubuntu, please use the linux build, ```sudo chmod a+rw /dev/ttyUSB0 ```, the change the format in the make file ``` **$(INCLUDES) $(FORMAT) -g``` with ```FORMAT = -m64```, add the x64 library: ``` -ldxl_x64_cpp ``` and finally change the include folder with the one you just compile. (I will try to figure out an easier way Cmake?)
 
 <br/>Once the install is done download this repository and make the MakeFile in the make_run directory, an run the code ./exampleServo
 <br />You can add your own code to the project by adding: __SOURCES += yourcode.cpp__ in the MakeFile
