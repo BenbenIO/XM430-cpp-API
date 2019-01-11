@@ -1,58 +1,63 @@
 ##################################################
-# PROJECT: DXL Protocol 2.0 Read/Write Example Makefile
-# AUTHOR : ROBOTIS Ltd.
+# PROJECT: Dynamixel XM-430 motors API, compile example running the API
+# AUTHOR : Benjamin IOLLER
 ##################################################
 
 #---------------------------------------------------------------------
-# Makefile template for projects using DXL SDK
+# Makefile template inspired by the original Dynamixel Makefile
 #
-# Please make sure to follow these instructions when setting up your
-# own copy of this file:
+# This Makefile will set the compiler option for a x86_64 (Ubuntu) or armv71 (Raspberry 3)
+# Add additionnal library (OPENCV, ...) with the LIBRARIES variable
+# Add additionnal sources code with the SOURCES variable
 #
-#   1- Enter the name of the target (the TARGET variable)
-#   2- Add additional source files to the SOURCES variable
-#   3- Add additional static library objects to the OBJECTS variable
-#      if necessary
-#   4- Ensure that compiler flags, INCLUDES, and LIBRARIES are
-#      appropriate to your needs
-#
-#
-# This makefile will link against several libraries, not all of which
-# are necessarily needed for your project.  Please feel free to
-# remove libaries you do not need.
+# Makefile will work for c and cpp source code.
 #---------------------------------------------------------------------
 
 # *** ENTER THE TARGET NAME HERE ***
 TARGET      =  exampleServo
 
-# important directories used by assorted rules and other variables
+# Directories path creation: Include and Object
 DIR_DXL    = ../
 DIR_OBJS   = .objects
 
-# compiler options
+# Get platform architecture, set the correct Dynamixel library, and compiler option
+ARCH :=$(shell arch)
+ifeq ($(ARCH),armv7l)
+	LIBRARIES += -ldxl_sbc_cpp
+	CCFLAGS   = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) -g
+	CXFLAGS   = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) -g
+	INCLUDES  += -I$(DIR_DXL)/include/dynamixel_sdk_raspberry
+endif
+
+ifeq ($(ARCH),x86_64)
+	LIBRARIES   += -ldxl_x64_cpp
+	CCFLAGS     = -std=c++11 -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) $(FORMAT) -g
+	CXFLAGS     = -std=c++11 -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) $(FORMAT) -g
+	INCLUDES    += -I$(DIR_DXL)/include/dynamixel_sdk_ubuntu
+	FORMAT      = -m64
+endif
+	
+# General compiler options
 CC          = gcc
 CX          = g++
-CCFLAGS     = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) -g
-CXFLAGS     = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) -g
 LNKCC       = $(CX)
-LNKFLAGS    = $(CXFLAGS) #-Wl,-rpath,$(DIR_THOR)/lib
+LNKFLAGS    = $(CXFLAGS)
 
 #---------------------------------------------------------------------
 # Core components (all of these are likely going to be needed)
 #---------------------------------------------------------------------
-INCLUDES   += -I$(DIR_DXL)/include/dynamixel_sdk
-LIBRARIES  += -ldxl_sbc_cpp
 LIBRARIES  += -lrt
 
 #---------------------------------------------------------------------
-# Files
+# Source files
 #---------------------------------------------------------------------
 SOURCES = exampleServo.cpp
 SOURCES += motorMX430.cpp
-    # *** OTHER SOURCES GO HERE ***
 
+#---------------------------------------------------------------------
+# Object recipe
+#---------------------------------------------------------------------
 OBJECTS  = $(addsuffix .o,$(addprefix $(DIR_OBJS)/,$(basename $(notdir $(SOURCES)))))
-#OBJETCS += *** ADDITIONAL STATIC LIBRARIES GO HERE ***
 
 #---------------------------------------------------------------------
 # Compiling Rules
