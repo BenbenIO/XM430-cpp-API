@@ -2,10 +2,39 @@
 
 int MotorXM430::GetID(){return m_ID;}
 
+//Updated 2019/02/08
+void MotorXM430::SetDrivingMode(uint8_t type)
+{
+	dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, m_ID, ADDR_PRO_DRIVE_MODE, type);
+}
+uint8_t MotorXM430::PrintDrivingMode()
+{
+	uint8_t type;
+	dxl_comm_result = packetHandler->read1ByteTxRx(portHandler, m_ID, ADDR_PRO_DRIVE_MODE, &type);
+	printf("Motor %d is on driving mode: %d\n", m_ID, type);
+	return(type);
+}
+
+void MotorXM430::SetTimeProfile(uint32_t Ta, uint32_t Tf)
+{
+	dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, m_ID, ADDR_PRO_PROFILE_ACCELERATION_TIME, Ta);
+	dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, m_ID, ADDR_PRO_PROFILE_TIME_SPAN, Tf);
+}
+
+
+void MotorXM430::PrintTimeProfile()
+{
+	uint32_t Ti, Tf;
+	dxl_comm_result = packetHandler->read4ByteTxRx(portHandler, m_ID, ADDR_PRO_PROFILE_ACCELERATION_TIME, &Ti);
+	dxl_comm_result = packetHandler->read4ByteTxRx(portHandler, m_ID, ADDR_PRO_PROFILE_TIME_SPAN, &Tf);
+	printf("Motor %d, current acceleration time: %d / timespan: %d\n", m_ID, Ti, Tf);
+}
+
+//End update
 uint16_t MotorXM430::GetModelNumber()
 {
 	uint16_t modelNumber=0;
-	dxl_comm_result=packetHandler->read2ByteTxRx(portHandler, m_ID, ADDR_PRO_MODEL, &modelNumber, &dxl_error);
+	dxl_comm_result=packetHandler->read2ByteTxRx(portHandler, m_ID, ADDR_PRO_MODEL, &modelNumber);
 	if(dxl_comm_result != COMM_SUCCESS)
 	{
 		printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
@@ -181,6 +210,8 @@ void MotorXM430::SetPID(uint16_t P_gain, uint16_t I_gain, uint16_t D_gain)
 	dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, m_ID, ADDR_PRO_POSITION_P_GAIN, P_gain, &dxl_error);
 	dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, m_ID, ADDR_PRO_POSITION_I_GAIN, I_gain, &dxl_error);
 	dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, m_ID, ADDR_PRO_POSITION_D_GAIN, D_gain, &dxl_error);
+	// check if PID are set:
+	PrintPID();
 }
 void MotorXM430::PrintPID()
 {
@@ -195,6 +226,8 @@ void MotorXM430::SetFFGain(uint16_t FF1Gain, uint16_t FF2Gain)
 {
 	dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, m_ID, ADDR_PRO_FEEDFORWARD_1st_GAIN, FF1Gain);
 	dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, m_ID, ADDR_PRO_FEEDFORWARD_2nd_GAIN, FF2Gain);
+	// check if FFgain are set:
+	PrintFFGain();
 }
 void MotorXM430::PrintFFGain()
 {
@@ -314,6 +347,9 @@ MotorXM430::MotorXM430(int ID, int operating_mode, int current_limit, int goal_c
 	m_goal_current = goal_current;
 	SetGoalCurrent(goal_current);
 	m_present_position=ReadAngle();
+	printf("UPDATE: drivingmode setting: TIME_BASED MODE\n");
+	SetDrivingMode(TIME_BASED);
+	m_drivingmode = PrintDrivingMode();
 	printf("Motor %d initialized\n", m_ID);
 };
 

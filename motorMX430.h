@@ -14,48 +14,57 @@
 
 #include <unistd.h>  //used for delay
 
-#include "dynamixel_sdk.h"                                  // Uses Dynamixel SDK library
+#include "dynamixel_sdk.h"
 
 //Control table address for MX430-W350 (ref. LabRobotArmOfficial.py)
-#define ADDR_PRO_MODEL 						0
+#define ADDR_PRO_MODEL 					0
 #define ADDR_PRO_OPERATING_MODE 			11
 #define ADDR_PRO_CURRENT_LIMIT 				38
 #define ADDR_PRO_ACCELERATION_LIMIT			40
-#define ADDR_PRO_VELOCITY_LIMIT 				44
+#define ADDR_PRO_VELOCITY_LIMIT 			44
 #define ADDR_PRO_TORQUE_ENABLE 				64
-#define ADDR_PRO_POSITION_D_GAIN				80
-#define ADDR_PRO_POSITION_I_GAIN				82
-#define ADDR_PRO_POSITION_P_GAIN				84
-#define ADDR_PRO_FEEDFORWARD_2nd_GAIN		88
-#define ADDR_PRO_FEEDFORWARD_1st_GAIN		90
+#define ADDR_PRO_POSITION_D_GAIN			80
+#define ADDR_PRO_POSITION_I_GAIN			82
+#define ADDR_PRO_POSITION_P_GAIN			84
+#define ADDR_PRO_FEEDFORWARD_2nd_GAIN			88
+#define ADDR_PRO_FEEDFORWARD_1st_GAIN			90
 #define ADDR_PRO_GOAL_CURRENT				102
 #define ADDR_PRO_GOAL_VELOCITY				104
-#define ADDR_PRO_PROFILE_ACCELERATION		108
+#define ADDR_PRO_PROFILE_ACCELERATION			108
 #define ADDR_PRO_PROFILE_VELOCITY			112
 #define ADDR_PRO_GOAL_POSITION				116
-#define ADDR_PRO_MOVING						122
+#define ADDR_PRO_MOVING					122
 #define ADDR_PRO_MOVING_STATUS				123
 #define ADDR_PRO_PRESENT_CURRENT			126
 #define ADDR_PRO_PRESENT_POSITION			132
+//udpate 2019/02/08:
+#define ADDR_PRO_DRIVE_MODE				10
+#define ADDR_PRO_PROFILE_ACCELERATION_TIME		108
+#define ADDR_PRO_PROFILE_TIME_SPAN			112
 
 //Protocol Version
-#define PROTOCOL_VERSION						 2.0
+#define PROTOCOL_VERSION				2.0
 
 //Default setting
-#define BAUDRATE								 57600
-#define DEVICENAME								 "/dev/ttyUSB0"  
-#define TORQUE_ENABLE							 1
-#define TORQUE_DISABLE							 0
-#define DXL_MINIMUN_POSITION_VALUE			 0.0
-#define DXL_MAXIMUN_POSITION_VALUE			 4095.0
-#define DXL_MOVING_STATUD_THRESHOLD		 10
+#define BAUDRATE					57600
+#define DEVICENAME					"/dev/ttyUSB0"  
+#define TORQUE_ENABLE					1
+#define TORQUE_DISABLE					0
+#define DXL_MINIMUN_POSITION_VALUE			0.0
+#define DXL_MAXIMUN_POSITION_VALUE			4095.0
+#define DXL_MOVING_STATUD_THRESHOLD		 	10
 
 //Motor's limits
-#define VELOCITY_LIMIT							 500				//ref: LabRobotArmOfficial.py
-#define ACCELERATION_LIMIT						 32767
-#define CURRENT_LIMIT							 1193				//mA
-#define MIN_MOTOR_ANGLE						 0					//Use for mapping				
-#define MAX_MOTOR_ANGLE						 4095				//Use for mapping
+#define VELOCITY_LIMIT					500				//ref: LabRobotArmOfficial.py
+#define ACCELERATION_LIMIT				32767
+#define CURRENT_LIMIT					1193				//mA
+#define MIN_MOTOR_ANGLE					0				//Use for mapping				
+#define MAX_MOTOR_ANGLE					4095				//Use for mapping
+
+//udpate 2019/02/08: switch motors control to time_based control / function trajectory generation depreciated
+// setprofile(acc, velo) function can be rename
+#define VELOCITY_BASED					0
+#define TIME_BASED					4
 
 class MotorXM430
 {
@@ -68,6 +77,7 @@ private:
 	int8_t m_operating_mode;
 	int m_current_limit;
 	int m_goal_current;
+	uint8_t m_drivingmode;
 	//Status
 	uint32_t m_present_position;
 	//Communication instance and variables
@@ -144,7 +154,19 @@ public:
 	//Input: wanted goal current mA uint16_t. The function check if the wanted goalcurrent is not exceeding the currentlimit
 	void SetGoalCurrent(uint16_t GoalCurrent);
 	//PrintGoalcurrent: printf the value of the goalcurrent (mA) in the console. Used for debugging.
-	void PrintGoalCurrent();				
+	void PrintGoalCurrent();	
+	
+	//## Update 2019/02/08
+	//SetDriving: set the driving mode of the motor, between TIMED_BASED and VELOCITY_BASED driving mode.
+	//Input: driving mode input (0: Velocity / 4: Time)
+	void SetDrivingMode(uint8_t type);
+	//PrintDrivingMode: print and return the current driving mode of the motor
+	uint8_t PrintDrivingMode();	
+	//SetTimeProfile: set the acceleration profile of the motor. Ta is the acceleration time, and tf is the final time. 
+	//Input: Ta, Tf in ms. If Ta = 0, the profile is rectangle / if Ta=0.5Tf, the profile is triangle. Please refer to Dynamixel documentation for more information
+	void SetTimeProfile(uint32_t Ta, uint32_t Tf);
+	//PrintTimeProfile: print the current Ta and Tf profile parameter of the motor
+	void PrintTimeProfile();
 };
 
 #endif
