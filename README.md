@@ -3,12 +3,14 @@ A simple C++ API for controlling dynamixel XM430-* servomotor.
 The API was made in order to control a robotic arm, and consist of an unique class. The programme ran on a Raspberry PI 3B+, with the Dynamixel XM430 motors connected with [U2D2](http://www.robotis.us/u2d2/) (Serial-RS485).
 The datasheet references can be found [HERE](http://support.robotis.com/en/product/actuator/dynamixel_x/xm_series/xm430-w350.htm#bookmark5). 
 ## Do not hesitate if you have any Issue or Request
-Lastest Update: Improve Mafefile for ubuntu (x86_64) and Raspberry3 (armv7l)
+Lastest Update: Switch from Velocity to timed driving mode. This give the capacity to set dead line of the motors movement. 
+If you still want to use a constant velocity instead, please let me know.  SetProfile was replace by SetTimeProfile(ta, tf)
 
 # Install && Dependencies
 The programme depend on the dynamixel_sdk library. Installation information can be found on their [github](https://github.com/ROBOTIS-GIT/DynamixelSDK). Please install the proper library depending on your platform.
 
-<br/>Once the install is done download this repository and make the MakeFile in the make_run directory, an run the code ./exampleServo
+<br/>Once the install is done, download this repository and make the MakeFile in the make_run directory, an run the code ./exampleServo
+<br/>On Ubuntu, we may need to run __sudo chmod a+rw /dev/ttyUSB*__.
 <br />You can add your own code to the project by adding: __SOURCES += yourcode.cpp__ in the MakeFile
 
 <br/>If you encounter any problem with the installation let me know. If when running the code a **Hardware Error** type pop ups, it maybe cause by a power supply too important (12V are recommended). 
