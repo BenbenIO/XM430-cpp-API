@@ -4,7 +4,7 @@ The API was made in order to control a robotic arm, and consist of an unique cla
 The datasheet references can be found [HERE](http://support.robotis.com/en/product/actuator/dynamixel_x/xm_series/xm430-w350.htm#bookmark5). 
 ## Do not hesitate if you have any Issue or Request
 Lastest Update: Switch from Velocity to timed driving mode. This give the capacity to set dead line of the motors movement. 
-If you still want to use a constant velocity instead, please let me know.  SetProfile was replace by SetTimeProfile(ta, tf)
+If you still want to use a constant velocity instead, please let me know.  SetProfile was replace by SetTimeProfile(ta, tf), see API description.
 
 # Install && Dependencies
 The programme depend on the dynamixel_sdk library. Installation information can be found on their [github](https://github.com/ROBOTIS-GIT/DynamixelSDK). Please install the proper library depending on your platform.
@@ -95,13 +95,6 @@ Output of the program:
 
 * __void PrintFFGain();__
 <br />PrintFFGain: printf the gain value of the motor's FeedForward control in the consol. Used for debugging.
-	
-* __void SetProfile(uint32_t Velocity, uint32_t Acceleration);__
-<br />SetProfile: set the acceleration and velocity profile of the motor. Used to tunned the motor behaviour and for motor synchronisation when several motors are moving.
-<br />Input: wanted velocity (RPM) and acceleration (Rev/min2) uint32_t. The function check if the wanted value are in the motor's limits ( XM430: VELOCITY_LIMIT 500 / ACCELERATION_LIMIT 32767)
-
-* __void PrintProfile();__
-<br />PrintProfile: printf the Velocity and Acceleration value in the consol. Used for debugging.
 
 * __void SetCurrentLimit();__
 <br />SetCurrentLimit: set the maximun current (torque) output of the motor. Used for current-based position control (gripper)
@@ -116,3 +109,18 @@ Output of the program:
 
 * __void PrintGoalCurrent();__
 <br />PrintGoalcurrent: printf the value of the goalcurrent (mA) in the console. Used for debugging.
+
+* __void SetDrivingMode(uint8_t type);__
+<br />SetDriving: set the driving mode of the motor, between TIMED_BASED and VELOCITY_BASED driving mode.
+<br />Input: driving mode input (0: Velocity / 4: Time)
+	
+* __uint8_t PrintDrivingMode();__
+<br />PrintDrivingMode: print and return the current driving mode of the motor
+		
+* __void SetTimeProfile(uint32_t Ta, uint32_t Tf);__
+<br />SetTimeProfile: set the acceleration profile of the motor. Ta is the acceleration time, and tf is the final time. 
+<br />Input: Ta, Tf in ms. If Ta = 0, the profile is rectangle / if Ta=0.5Tf, the profile is triangle. Please refer to Dynamixel documentation for more information
+	
+* __void PrintTimeProfile();__
+<br />PrintTimeProfile: print the current Ta and Tf profile parameter of the motor
+	
