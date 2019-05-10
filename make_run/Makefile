@@ -17,7 +17,7 @@
 TARGET      =  exampleServo
 
 # Directories path creation: Include and Object
-DIR_DXL    = ../
+DIR_DXL    = ..
 DIR_OBJS   = .objects
 
 # Get platform architecture, set the correct Dynamixel library, and compiler option
@@ -27,6 +27,13 @@ ifeq ($(ARCH),armv7l)
 	CCFLAGS   = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) -g
 	CXFLAGS   = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) -g
 	INCLUDES  += -I$(DIR_DXL)/include/dynamixel_sdk_raspberry
+endif
+# Jetson Nano's architecture is aarch64
+ifeq ($(ARCH),aarch64)
+	LIBRARIES += -ldxl_sbc_cpp
+	CCFLAGS   = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) -g
+	CXFLAGS   = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall $(INCLUDES) -g
+	INCLUDES  += -I$(DIR_DXL)/include/dynamixel_sdk
 endif
 
 ifeq ($(ARCH),x86_64)
